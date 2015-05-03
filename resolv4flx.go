@@ -15,8 +15,8 @@ var (
 )
 
 func init() {
+	flag.IntVar(&workers, "w", 5, "Number of worker threads to resolve DNS entries")
 	flag.IntVar(&workers, "workers", 5, "Number of worker threads to resolve DNS entries")
-
 }
 
 func main() {
@@ -43,7 +43,27 @@ func main() {
 
 func usage() {
 	// TODO print usage
-	fmt.Println("Utility to resolve DNS entries in a file")
+
+	fmt.Println(`Utility to resolve DNS entries in a file
+	
+Usage: resolv4flx [flags] ENTRY_FILE
+	
+flags:
+	-w, -workers=5		Number of worker threads to resolve DNS entries
+
+ENTRY_FILE:
+	File containing "domain dnsType" entries, one per line
+
+File entry example:
+	thumbs2.ebaystatic.com.	AAAA
+	s-static.ak.fbcdn.net.	A
+
+Usage example:
+	
+	resolv4flx -w 10 query.txt
+
+`)
+
 	os.Exit(2)
 
 }
