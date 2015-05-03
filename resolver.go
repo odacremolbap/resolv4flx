@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"net"
 	"strings"
+	"sync"
 )
+
+var outLock sync.Mutex
 
 func resolveEntry(ch chan string) {
 
@@ -93,7 +96,7 @@ func resolveMX(domain string) (string, error) {
 	response := ""
 
 	for _, mx := range mxs {
-		response += "[host:" + mx.Host + ",pref:" + string(mx.Pref) + "]"
+		response += fmt.Sprintf("[host:%s,pref:%d]", mx.Host, mx.Pref)
 	}
 
 	return response, nil
@@ -174,14 +177,16 @@ func resolveSRV(domain string) (string, error) {
 	response := "cname:" + cname
 
 	for _, srv := range srvs {
-		response += "[target:" + srv.Target + ",port:" + string(srv.Port) + ",priority:" + string(srv.Priority) + ",weight:" + string(srv.Weight) + "]"
+		response += fmt.Sprintf("[target:%s,port:%d,priority:%d,weight:%d]", srv.Target, srv.Port, srv.Priority, srv.Weight)
 	}
 
 	return response, err
 }
 
 func printResult(query string, entryType string, response string, err error) {
-	// TODO sync
+
+	outLock.Lock()
+	defer outLock.Unlock()
 
 	fmt.Println("----------------------------------")
 	fmt.Println("Query: " + query)

@@ -37,6 +37,7 @@ func main() {
 	// Exit when when reader and resolvers are done
 	waitResolvers.Wait()
 
+	fmt.Println("----------------------------------")
 	fmt.Println("Finished processing")
 }
 
